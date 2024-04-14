@@ -3,6 +3,7 @@ import re
 import json
 import dotenv
 import os
+import time
 
 dotenv.load_dotenv(".env")
 
@@ -73,6 +74,9 @@ def llm_inference(prompt):
             if response.status_code == 200:
                 content = response.json()
                 return content["candidates"][0]["content"]["parts"][0]["text"]
+            elif response.status_code == 429:
+                time.sleep(1)
+                return llm_inference(prompt)
             else:
                 raise Exception(f"Request failed with status code {response.status_code}")
             

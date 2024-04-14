@@ -190,7 +190,7 @@ def clock_function():
     global message_queue
     global chat_history
 
-    rate = 1000 # rate of time flow
+    rate = 100 # rate of time flow
     time_quanta = 3600/rate # Every "time_quanta" seconds is 1 hour in the real word
     clock = 0
 

@@ -44,6 +44,10 @@ def check_char_created():
             char_created = True
             UID = 6656091546 # this should also be stored and read from a file or datastore
 
+        # DEBUG
+        bot.send_message(UID, "Character has been loaded. Initialization complete. The clock has been started")
+        bot.send_message(UID, "Character Definition: " + personality_definition)
+
 @bot.message_handler(commands=['start']) # users run this the first time they ever use stuff
 def start_handler(message): # i could prolly instead run the check on every message with condition check
     global UID
@@ -132,8 +136,6 @@ def question_answer_loop(message):
         bot.reply_to(message, personality_definer_questions[-1])
         bot.register_next_step_handler(message, question_answer_loop)
     else:
-        print(personality_definition)
-        print(personality_definer_answers)
         personality_definition = char_compiler(personality_definition, personality_definer_answers)
         with open('./char_data.txt', 'w') as f:
             f.write(personality_definition)
@@ -299,6 +301,7 @@ def chat_handler():
     global clock
     global sociability
     global threshold
+    global UID
 
     while True:
         msg_data = message_queue.get()
@@ -310,7 +313,10 @@ def chat_handler():
 
                 decision = decision_maker_terminator(personality_definition=personality_definition,current_context=chat_history,storyline=timings[clock],curr_clock_time=clock,sociability=sociability,threshold=threshold)
 
+                # DEBUG
                 print(decision)
+                bot.send_message(UID, f"Source : {msg_data['source']}, Character engage decision : {decision}")
+
 
                 # if not decision: # ie if decision is to terminate
                 #     form a chat to terminate the conversation or say bye
@@ -325,7 +331,10 @@ def chat_handler():
 
                 decision = decision_maker_start(personality_definition=personality_definition,current_context=chat_history,storyline=timings[clock],curr_clock_time=clock,sociability=sociability,threshold=threshold)
 
+                # DEBUG
                 print(decision)
+                bot.send_message(UID, f"Source : {msg_data['source']}, Character engage decision : {decision}")
+
 
                 # make decision
                 # form initial chat msg with respect to ctx
@@ -369,5 +378,4 @@ def main():
 
     bot.infinity_polling()
 
-# Run the main function
 main()
